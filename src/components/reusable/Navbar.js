@@ -1,9 +1,10 @@
 import React from 'react'
 import {Navbar, Icon, NavItem, Container} from 'react-materialize'
+import { firebaseApp } from '../../firebase'
 
 export default () => {
         return (
-            <div style={{ background: "red" }}>
+            <div style={{ background: "royalBlue" }}>
                 <Container>
                     <Navbar
                         alignLinks="right"
@@ -25,12 +26,15 @@ export default () => {
                             outDuration: 200,
                             preventScrolling: true
                         }}
+                    >
+                        <NavItem 
+                            href="components.html" 
+                            onClick={event => {
+                                event.preventDefault()
+                                firebaseApp.auth().signOut()
+                            }}
                         >
-                        <NavItem onClick={function noRefCheck(){}}>
-                            Getting started
-                        </NavItem>
-                        <NavItem href="components.html">
-                            Components
+                            Log out
                         </NavItem>
                     </Navbar>
                 </Container>

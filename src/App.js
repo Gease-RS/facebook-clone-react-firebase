@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { userRef } from './firebase'
+import React, { useEffect, useState } from 'react'
+import { userRef, firebaseApp } from './firebase'
 import signIn from './api/signIn'
 import signUp from './api/signUp'
 import SignIn from './components/SignIn'
@@ -12,58 +12,37 @@ import { Button, Container, Row, Col } from 'react-materialize'
 import './App.css'
 
 function App() {
-  useEffect(() => {
-    function callFunc() {
-      userRef.push({
-        email: "teste@teste.com",
-        passaword: "12345678"
-      })
-    }
 
-    //callFunc()
-    
+  const [stage, setStage] = useState('')
+  const [signUpSignIn, setSignUpSignIn] = useState("SI")
+  
+  useEffect(() => {
+    firebaseApp.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user.uid)
+        setStage('loggedIn')
+        setSignUpSignIn("SI")
+      } else {
+        console.log('No User Logged In')
+        setStage('notLoggedIn')
+      }
+    })
   }, [])
 
-  const onSignUp = () => {
-    const result = signUp(
-      'olavo@signup3.com', 
-      'olavopassword3', 
-      'Olavo3', 
-      'Bilac3'
-      )
-    console.log(result)
+  const changeState = value => {
+    setSignUpSignIn(value)
   }
-
-  const onSignIn = () => {
-    const result = signIn('olavo@signup3.com', 'olavopassword3')
-    
-    console.log(result)
-  }
+ 
   return (
     <div className="App">
-      <Navbar />
-      <Container>
-        <Row>
-          <Col s={4}>
-            <SignIn/>
-              <Button className="red"
-                small 
-                 onClick={()=>onSignIn()}
-             >
-                Sign In
-              </Button>
-          </Col>
-          <Col s={8}>
-            <SignUp/>
-              <Button node="a"
-                small 
-                onClick={()=>onSignUp()}
-              >
-                Sign Up
-            </Button>
-          </Col>
-        </Row>   
-      </Container>
+      <Navbar stage={stage} />
+      {stage === 'loggedIn' && <Feed />}
+      {stage === 'notLoggedIn' && signUpSignIn === "SI" && ( 
+        <SignIn changeState={changeState}/> 
+      )}
+      {stage === 'notLoggedIn' && signUpSignIn === "SU" && ( 
+        <SignUp changeState={changeState}/> 
+      )}
     </div>
   );
 }

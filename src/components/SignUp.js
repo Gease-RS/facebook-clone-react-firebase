@@ -1,7 +1,30 @@
-import React from 'react'
-import { TextInput } from 'react-materialize'
+import React, { useState } from 'react'
+import { TextInput, Button } from 'react-materialize'
+import signUp from '../api/signUp'
 
-export default () => {
+export default (props) => {
+    const [data, setData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: ''
+    })
+
+    const onSubmit = async () => {
+        const result = signUp(data)
+        if(result === true) {
+            console.log('SIGN UP SUCESSFUL')
+        } else if (result === false) {
+            console.log('Sign Up FAILED')
+        }
+    }
+
+    const onChangeText = (key, value) => {
+        const newData = {...data}
+        newData[key] = value
+        setData(newData)
+    }
+
     return (
         <div 
             style={{ 
@@ -9,11 +32,44 @@ export default () => {
                 justifyContent: "center"
             }}
         >
+
             <div className="outerBox">
-                <TextInput label="First Name" xl={12}/>
-                <TextInput label="Last Name" xl={12} />
-                <TextInput label="Email" xl={12}/>
-                <TextInput label="Password" xl={12}/>
+              <h4>Sign Up</h4>
+                <TextInput 
+                    label="First Name" 
+                    onChange={e=>onChangeText('firstName', e.target.value)}
+                />
+                <TextInput 
+                    label="Last Name" 
+                    onChange={e=>onChangeText('lastName', e.target.value)}
+                />
+                <TextInput 
+                    label="Email" 
+                    onChange={e=>onChangeText('email', e.target.value)}
+                />
+                <TextInput 
+                    label="Password" 
+                    onChange={e=>onChangeText('password', e.target.value)}
+                />
+                <Button 
+                    node="button" 
+                    type="submit" 
+                    waves="light"
+                    small 
+                    onClick={onSubmit}
+                >
+                   Submit
+                </Button>
+                <p>
+                    Already have an account? {""}
+                    <span 
+                        onClick={() => {
+                            props.changeState("SI")
+                        }}
+                    >
+                        Sign In
+                    </span>
+                </p>
             </div>
         </div>
     )

@@ -1,6 +1,6 @@
 import { firebaseApp, userRef } from '../firebase'
 
-export default (email, password) => {
+export default ({email, password}) => {
         console.log('Into the function')
     firebaseApp
         .auth()
@@ -16,6 +16,6 @@ export default (email, password) => {
     .catch(err => {
         console.log(err.message)
         console.log("User not Found and not signed In")
-        return err
+        return err.message
     })
 }

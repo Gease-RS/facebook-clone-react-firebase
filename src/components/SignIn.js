@@ -1,7 +1,28 @@
-import React from 'react'
-import { TextInput } from 'react-materialize'
+import React, { useState } from 'react'
+import { TextInput, Button } from 'react-materialize'
+import signIn from '../api/signIn'
 
-export default () => {
+export default (props) => {
+    const [data, setData] = useState({
+        email: '',
+        password: ''
+    })
+
+    const onChangeText = (key, value) => {
+        const newData = {...data}
+        newData[key] = value
+        setData(newData)
+    }
+
+    const onSubmit = async () => {
+        const result = signIn(data)
+        if(result === true) {
+            console.log('SIGN UP SUCESSFUL')
+        } else if (result === false) {
+            console.log('Sign Up FAILED')
+        }
+    }
+
     return (
         <div 
             style={{ 
@@ -10,7 +31,33 @@ export default () => {
             }}
         >
             <div className="outerBox">
-                <TextInput label="First Name" xl={12}/>
+                <h4>Sign In</h4>
+                <TextInput 
+                    label="Email" 
+                    onChange={e=>onChangeText('email', e.target.value)}
+                />
+                <TextInput 
+                    label="Password" 
+                    onChange={e=>onChangeText('password', e.target.value)}
+                />
+                <Button 
+                    node="button" 
+                    type="submit" 
+                    waves="light"
+                    small 
+                    onClick={onSubmit}
+                >
+                   Submit
+                </Button>
+               <p>
+                   Already have an account? 
+                   <span onClick={() => {
+                            props.changeState("SU")
+                        }}
+                   >
+                    Sign Up
+                   </span>
+               </p>
             </div>
         </div>
     )
