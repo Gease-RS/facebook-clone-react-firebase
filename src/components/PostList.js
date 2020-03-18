@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import getPosts from '../api/getPosts'
-import { postRef } from '../firebase'
+import { postRef, firebaseApp } from '../firebase'
+import SinglePost from './SinglePost'
 
 export default () => {
-
     const [posts, setPosts] = useState([])
+    const [myUID, setMyUID] = useState('')
 
     useEffect(() => {
         const getAllThePosts = async () => {
             postRef.on('value', snap => {
-                console.log(snap.val())
-              setPosts([snap.val()])
+                var fetchedPosts = []
+                snap.forEach(singlePost => {
+                    fetchedPosts.push({
+                        ...singlePost.val(),
+                        postKey: singlePost.key
+                    })
+                })
+                const uid = firebaseApp.auth().currentUser.uid
+                setMyUID(uid)
+                fetchedPosts.reverse()
+                setPosts(fetchedPosts)
             })
         }
         getAllThePosts()
@@ -18,9 +27,13 @@ export default () => {
     
     return (
         <div>
-            {posts.map(singlePost => {
-                return <h1>{JSON.stringify(singlePost)}</h1>
-            })}
+            {posts.map(singlePost => (
+                <SinglePost 
+                    key={singlePost.postKey}
+                    details={singlePost} 
+                    myUID={myUID} 
+                />
+            ))}
         </div>
     )
 }

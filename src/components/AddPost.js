@@ -34,6 +34,7 @@ export default () => {
                 {content}
                 <Row style={{ marginBottom: 0}}>
                     <Textarea
+                        value={content}
                         s={12}
                         className="custom-textArea"
                         placeholder="Please write here..."

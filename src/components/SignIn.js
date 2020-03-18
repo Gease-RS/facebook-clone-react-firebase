@@ -18,8 +18,10 @@ export default (props) => {
         const result = signIn(data)
         if(result === true) {
             console.log('SIGN UP SUCESSFUL')
+            setError('')
         } else if (result === false) {
             console.log('Sign Up FAILED')
+            setError('Email and Password Incorrect')
         }
     }
 
